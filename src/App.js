@@ -3,6 +3,7 @@ import "./App.css";
 import Main from "./Layouts/Main";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
+import Signup from "./Pages/Signup";
 
 function App() {
   const router = createBrowserRouter([
@@ -17,6 +18,10 @@ function App() {
         {
           path: "/login",
           element: <Login></Login>,
+        },
+        {
+          path: "/signup",
+          element: <Signup></Signup>,
         },
       ],
     },

@@ -1,12 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { MdEmail, MdPassword } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-const Login = () => {
+const Signup = () => {
   return (
     <div className="h-[80vh] flex items-center justify-center">
       <div>
-        <h1 className="font-bold text-3xl text-center mb-10">LOGIN</h1>
+        <h1 className="font-bold text-3xl text-center mb-10">SIGNUP</h1>
         <div className="form-control my-3">
           <label className="label">
             <span className="label-text">Enter Email</span>
@@ -39,15 +39,15 @@ const Login = () => {
           </label>
         </div>
         <p className="text-sm my-4">
-          Don't have an account?{" "}
-          <Link to="/signup" className="link link-primary">
-            Signup Now
+          Already have an account?{" "}
+          <Link to="/login" className="link link-primary">
+            Login Now
           </Link>
         </p>
-        <button className="btn btn-primary w-full font-bold">LOGIN</button>
+        <button className="btn btn-primary w-full font-bold">SIGNUP</button>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Signup;
