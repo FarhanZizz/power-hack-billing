@@ -78,7 +78,7 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <p className="normal-case text-xl">Paid Total: {}$</p>
+        {accesstoken && <p className="normal-case text-xl">Paid Total: {}$</p>}
       </div>
     </div>
   );

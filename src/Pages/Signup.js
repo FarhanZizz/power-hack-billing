@@ -28,7 +28,6 @@ const Signup = () => {
         if (data.message) {
           toast.error(data.message);
         } else {
-          toast.success("Registration Successful");
           localStorage.setItem("accessToken", data.token);
           navigate("/");
           window.location.reload();

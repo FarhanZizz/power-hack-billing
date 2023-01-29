@@ -28,7 +28,6 @@ const Login = () => {
         if (data.message) {
           toast.error(data.message);
         } else {
-          toast.success("Login Successful");
           localStorage.setItem("accessToken", data.token);
           navigate("/");
           window.location.reload();
