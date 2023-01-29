@@ -1,11 +1,43 @@
 import React from "react";
+import { toast } from "react-hot-toast";
 import { MdEmail, MdPassword } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const handleSignUp = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    const user = {
+      email,
+      password,
+    };
+
+    fetch(`http://localhost:5000/registration`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message) {
+          toast.error(data.message);
+        } else {
+          toast.success("Registration Successful");
+          localStorage.setItem("accessToken", data.token);
+          navigate("/");
+          window.location.reload();
+        }
+      });
+  };
   return (
     <div className="h-[80vh] flex items-center justify-center">
-      <div>
+      <form onSubmit={handleSignUp}>
         <h1 className="font-bold text-3xl text-center mb-10">SIGNUP</h1>
         <div className="form-control my-3">
           <label className="label">
@@ -17,7 +49,9 @@ const Signup = () => {
             </span>
 
             <input
-              type="text"
+              name="email"
+              required
+              type="email"
               placeholder="Email"
               className="input input-bordered focus:outline-none"
             />
@@ -29,7 +63,9 @@ const Signup = () => {
           </label>
           <label className="input-group">
             <input
-              type="text"
+              name="password"
+              required
+              type="password"
               placeholder="Password"
               className="input input-bordered focus:outline-none"
             />
@@ -44,8 +80,10 @@ const Signup = () => {
             Login Now
           </Link>
         </p>
-        <button className="btn btn-primary w-full font-bold">SIGNUP</button>
-      </div>
+        <button type="submit" className="btn btn-primary w-full font-bold">
+          SIGNUP
+        </button>
+      </form>
     </div>
   );
 };

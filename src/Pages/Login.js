@@ -1,11 +1,43 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdEmail, MdPassword } from "react-icons/md";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const handleLogin = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    const user = {
+      email,
+      password,
+    };
+
+    fetch(`http://localhost:5000/login`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message) {
+          toast.error(data.message);
+        } else {
+          toast.success("Login Successful");
+          localStorage.setItem("accessToken", data.token);
+          navigate("/");
+          window.location.reload();
+        }
+      });
+  };
   return (
     <div className="h-[80vh] flex items-center justify-center">
-      <div>
+      <form onSubmit={handleLogin}>
         <h1 className="font-bold text-3xl text-center mb-10">LOGIN</h1>
         <div className="form-control my-3">
           <label className="label">
@@ -17,7 +49,9 @@ const Login = () => {
             </span>
 
             <input
-              type="text"
+              type="email"
+              name="email"
+              required
               placeholder="Email"
               className="input input-bordered focus:outline-none"
             />
@@ -29,7 +63,9 @@ const Login = () => {
           </label>
           <label className="input-group">
             <input
-              type="text"
+              type="password"
+              name="password"
+              required
               placeholder="Password"
               className="input input-bordered focus:outline-none"
             />
@@ -44,8 +80,10 @@ const Login = () => {
             Signup Now
           </Link>
         </p>
-        <button className="btn btn-primary w-full font-bold">LOGIN</button>
-      </div>
+        <button type="submit" className="btn btn-primary w-full font-bold">
+          LOGIN
+        </button>
+      </form>
     </div>
   );
 };
