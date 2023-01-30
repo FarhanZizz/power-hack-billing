@@ -1,6 +1,7 @@
 import { Toaster } from "react-hot-toast";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
+import PrivateRoute from "./Components/PrivateRoute";
 import Main from "./Layouts/Main";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
@@ -14,7 +15,11 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home></Home>,
+          element: (
+            <PrivateRoute>
+              <Home></Home>
+            </PrivateRoute>
+          ),
         },
         {
           path: "/login",

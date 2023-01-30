@@ -16,7 +16,7 @@ const Signup = () => {
       password,
     };
 
-    fetch(`http://localhost:5000/registration`, {
+    fetch(`https://power-hack-billing-server.vercel.app/registration`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

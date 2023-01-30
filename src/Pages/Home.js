@@ -12,11 +12,14 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   // Fetching Bill List
   const refetch = () => {
-    fetch(`http://localhost:5000/billing-list?page=${page}`, {
-      headers: {
-        authorization: `bearer ${localStorage.getItem("accessToken")}`,
-      },
-    })
+    fetch(
+      `https://power-hack-billing-server.vercel.app/billing-list?page=${page}`,
+      {
+        headers: {
+          authorization: `bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         setBills(data.result);
@@ -32,7 +35,6 @@ const Home = () => {
   useEffect(() => {
     refetch();
   }, [page]);
-
   const handleAddBill = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -51,7 +53,7 @@ const Home = () => {
     setBills([...bills, { name, email, phone, amount, time }]);
     setIsLoading(true);
     // adding new bill to db
-    fetch(`http://localhost:5000/add-billing`, {
+    fetch(`https://power-hack-billing-server.vercel.app/add-billing`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -86,7 +88,7 @@ const Home = () => {
 
     const bill = { name, email, phone, amount };
 
-    fetch(`http://localhost:5000/update-billing/${id}`, {
+    fetch(`https://power-hack-billing-server.vercel.app/update-billing/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -109,7 +111,7 @@ const Home = () => {
       });
   };
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/delete-billing/${id}`, {
+    fetch(`https://power-hack-billing-server.vercel.app/delete-billing/${id}`, {
       method: "DELETE",
       headers: {
         authorization: `bearer ${localStorage.getItem("accessToken")}`,
@@ -229,6 +231,7 @@ const Home = () => {
                 const dateB = new Date(b.time).valueOf();
                 return dateB - dateA;
               })
+              .slice(0, 10)
               .map((bill, index) => (
                 <tr key={index}>
                   <th>{index + 1}</th>
