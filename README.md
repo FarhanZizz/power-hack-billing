@@ -6,7 +6,7 @@
 - [React Router](https://reactrouter.com/) for handling client-side routing
 - [React Query](https://github.com/tannerlinsley/react-query) for fetching and caching data
 - [Express.js](https://expressjs.com/) for building the backend API
-- [JsonWebToken](https://github.com/auth0/node-jsonwebtoken) for API data encryption
+- [JsonWebToken](https://github.com/auth0/node-jsonwebtoken) for API data encryption & user authentication
 - [MongoDB](https://www.mongodb.com/) for storing data
 - [Tailwind CSS](https://tailwindcss.com/) for styling the site
 - [DaisyUI](https://daisyui.com/) for additional UI components
