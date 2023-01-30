@@ -66,11 +66,59 @@ const Home = () => {
           toast.success("Bill Successfully Added");
           refetch();
           form.reset();
+          const modal = document.getElementById("billing-modal");
+          modal.checked = false; // will remove the modal
           setIsLoading(false);
         } else {
           toast.error(data.message || "Error Occured Try Again :(");
           refetch();
         }
+      });
+  };
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const name = form.name.value;
+    const id = form.id.value;
+    const email = form.email.value;
+    const phone = form.phone.value;
+    const amount = form.amount.value;
+
+    const bill = { name, email, phone, amount };
+
+    fetch(`http://localhost:5000/update-billing/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+        authorization: `bearer ${localStorage.getItem("accessToken")}`,
+      },
+      body: JSON.stringify(bill),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          toast.success("Bill Successfully updated");
+          refetch();
+          const modal = document.getElementById("edit-bill");
+          modal.checked = false; // will remove the modal
+          form.reset();
+        } else {
+          toast.error(data.message || "Error Occured Try Again :(");
+          refetch();
+        }
+      });
+  };
+  const handleDelete = (id) => {
+    fetch(`http://localhost:5000/delete-billing/${id}`, {
+      method: "DELETE",
+      headers: {
+        authorization: `bearer ${localStorage.getItem("accessToken")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        toast.success("successfully Deleted");
+        refetch();
       });
   };
   return (
@@ -196,7 +244,107 @@ const Home = () => {
                   <td>{bill.email}</td>
                   <td>{bill.phone}</td>
                   <td>{bill.amount}</td>
-                  <td>Blue</td>
+                  <td>
+                    <label
+                      htmlFor="edit-bill"
+                      className="link link-primary mr-3"
+                    >
+                      Update
+                    </label>
+                    {/* Update bill modal */}
+                    <input
+                      type="checkbox"
+                      id="edit-bill"
+                      className="modal-toggle"
+                    />
+                    <div className="modal">
+                      <div className="modal-box relative">
+                        <label
+                          htmlFor="edit-bill"
+                          className="btn btn-sm btn-circle absolute right-2 top-2"
+                        >
+                          ✕
+                        </label>
+                        <h3 className="font-bold text-lg text-center uppercase">
+                          update bill
+                        </h3>
+                        <form onSubmit={handleUpdate}>
+                          <div className="form-control my-3">
+                            <label className="label">
+                              <span className="label-text">Full Name</span>
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="Full Name"
+                              name="name"
+                              className="input input-bordered rounded-none border-0 border-b-2 input-primary w-full focus:outline-none"
+                            />
+                            <input
+                              type="text"
+                              value={bill._id}
+                              placeholder="Full Name"
+                              name="id"
+                              className="hidden input input-bordered rounded-none border-0 border-b-2 input-primary w-full focus:outline-none"
+                            />
+                          </div>
+                          <div className="form-control my-3">
+                            <label className="label">
+                              <span className="label-text">Email</span>
+                            </label>
+                            <input
+                              type="email"
+                              required
+                              placeholder="Email"
+                              name="email"
+                              className="input input-bordered rounded-none border-0 border-b-2 input-primary w-full focus:outline-none"
+                            />
+                          </div>
+                          <div className="form-control my-3">
+                            <label className="label">
+                              <span className="label-text">Phone</span>
+                            </label>
+                            <input
+                              type="number"
+                              required
+                              minLength={11}
+                              placeholder="Phone"
+                              name="phone"
+                              className="input input-bordered rounded-none border-0 border-b-2 input-primary w-full focus:outline-none"
+                            />
+                            {error && (
+                              <p className="text-error text-sm">{error}</p>
+                            )}
+                          </div>
+                          <div className="form-control my-3">
+                            <label className="label">
+                              <span className="label-text">Paid Amount</span>
+                            </label>
+                            <input
+                              type="number"
+                              required
+                              placeholder="Paid Amount"
+                              name="amount"
+                              className="input input-bordered rounded-none border-0 border-b-2 input-primary w-full focus:outline-none"
+                            />
+                          </div>
+                          <div className="modal-action">
+                            <button type="submit" className="btn btn-primary">
+                              Add Bill
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        handleDelete(bill._id);
+                      }}
+                      className="link link-error"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
           </tbody>
