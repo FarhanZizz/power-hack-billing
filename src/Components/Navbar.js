@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import { AmountContext } from "../AmountProvider";
 
 const Navbar = () => {
+  //Total Paid Bill Amount
   const { amount } = useContext(AmountContext);
+
+  //detecting users by access token in localstorage
   const [accesstoken, setAccesstoken] = useState(
     localStorage.getItem("accessToken")
   );

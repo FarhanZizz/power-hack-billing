@@ -23,12 +23,12 @@ const Home = () => {
       .then((res) => res.json())
       .then((data) => {
         setBills(data.result);
-        setCount(data.count);
+        setCount(data.count); //page count
         const totalAmount = data.result.reduce(
           (acc, item) => acc + parseInt(item.amount),
           0
         );
-        setAmount(totalAmount);
+        setAmount(totalAmount); // updating total amount in navbar
       });
   };
   //Customm Refetch Function to call later
@@ -64,7 +64,7 @@ const Home = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.acknowledged) {
-          //if bill gets added refetch function is called
+          //if bill gets added refetch function is called to update the id
           toast.success("Bill Successfully Added");
           refetch();
           form.reset();

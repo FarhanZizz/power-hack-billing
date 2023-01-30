@@ -15,7 +15,7 @@ const Login = () => {
       email,
       password,
     };
-
+    // validating user info in db and getting access token from server
     fetch(`https://power-hack-billing-server.vercel.app/login`, {
       method: "POST",
       headers: {
