@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { AmountContext } from "../AmountProvider";
 
 const Navbar = () => {
+  const { amount } = useContext(AmountContext);
   const [accesstoken, setAccesstoken] = useState(
     localStorage.getItem("accessToken")
   );
@@ -78,7 +80,9 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        {accesstoken && <p className="normal-case text-xl">Paid Total: {}$</p>}
+        {accesstoken && (
+          <p className="normal-case text-xl">Paid Total: {amount}$</p>
+        )}
       </div>
     </div>
   );

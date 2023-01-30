@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { AmountContext } from "../AmountProvider";
 
 const Home = () => {
+  const { setAmount } = useContext(AmountContext);
   const [bills, setBills] = useState([]);
   const [error, setError] = useState("");
   const [count, setCount] = useState(0);
@@ -19,6 +21,11 @@ const Home = () => {
       .then((data) => {
         setBills(data.result);
         setCount(data.count);
+        const totalAmount = data.result.reduce(
+          (acc, item) => acc + parseInt(item.amount),
+          0
+        );
+        setAmount(totalAmount);
       });
   };
   //Customm Refetch Function to call later
