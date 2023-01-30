@@ -1,28 +1,77 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 const Home = () => {
+  const [bills, setBills] = useState([]);
   const [error, setError] = useState("");
-  const handleAddBill = (e) => {
+  const [count, setCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const pages = Math.ceil(count / 10);
+  const [isLoading, setIsLoading] = useState(false);
+  // Fetching Bill List
+  const refetch = () => {
+    fetch(`http://localhost:5000/billing-list?page=${page}`, {
+      headers: {
+        authorization: `bearer ${localStorage.getItem("accessToken")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setBills(data.result);
+        setCount(data.count);
+      });
+  };
+  //Customm Refetch Function to call later
+  useEffect(() => {
+    refetch();
+  }, [page]);
+
+  const handleAddBill = async (e) => {
     e.preventDefault();
-    setError("");
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
     const phone = form.phone.value;
     const amount = form.amount.value;
+    const time = new Date().toLocaleString();
 
     if (phone.length !== 11) {
       setError("Phone Number Must Be 11 Digits");
       return;
     }
-    console.log(name, email, phone, amount);
+    const bill = { name, email, phone, amount, time };
+    // bills is being mapped below
+    setBills([...bills, { name, email, phone, amount, time }]);
+    setIsLoading(true);
+    // adding new bill to db
+    fetch(`http://localhost:5000/add-billing`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `bearer ${localStorage.getItem("accessToken")}`,
+      },
+      body: JSON.stringify(bill),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          //if bill gets added refetch function is called
+          toast.success("Bill Successfully Added");
+          refetch();
+          form.reset();
+          setIsLoading(false);
+        } else {
+          toast.error(data.message || "Error Occured Try Again :(");
+          refetch();
+        }
+      });
   };
   return (
     <div className="p-10">
       <div className="flex justify-between">
         <input
           type="text"
-          placeholder="Type here"
+          placeholder="Search Bills"
           className="input input-bordered rounded-none border-0 border-b-2 input-primary w-full max-w-xs focus:outline-none mb-5"
         />
         <label
@@ -34,7 +83,13 @@ const Home = () => {
         {/* Billing Modal */}
         <input type="checkbox" id="billing-modal" className="modal-toggle" />
         <div className="modal">
-          <div className="modal-box">
+          <div className="modal-box relative">
+            <label
+              htmlFor="billing-modal"
+              className="btn btn-sm btn-circle absolute right-2 top-2"
+            >
+              ✕
+            </label>
             <h3 className="font-bold text-lg text-center uppercase">
               Add a new bill
             </h3>
@@ -108,102 +163,52 @@ const Home = () => {
               <th>Email</th>
               <th>Phone</th>
               <th>Paid Amount</th>
-              <th>Actionnpm start</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th>1</th>
-              <td>Cy Ganderton</td>
-              <td>Quality Control Specialist</td>
-              <td>Littel, Schaden and Vandervort</td>
-              <td>Canada</td>
-              <td>12/16/2020</td>
-              <td>Blue</td>
-            </tr>
-            <tr>
-              <th>2</th>
-              <td>Hart Hagerty</td>
-              <td>Desktop Support Technician</td>
-              <td>Zemlak, Daniel and Leannon</td>
-              <td>United States</td>
-              <td>12/5/2020</td>
-              <td>Purple</td>
-            </tr>
-            <tr>
-              <th>3</th>
-              <td>Brice Swyre</td>
-              <td>Tax Accountant</td>
-              <td>Carroll Group</td>
-              <td>China</td>
-              <td>8/15/2020</td>
-              <td>Red</td>
-            </tr>
-            <tr>
-              <th>4</th>
-              <td>Marjy Ferencz</td>
-              <td>Office Assistant I</td>
-              <td>Rowe-Schoen</td>
-              <td>Russia</td>
-              <td>3/25/2021</td>
-              <td>Crimson</td>
-            </tr>
-            <tr>
-              <th>5</th>
-              <td>Yancy Tear</td>
-              <td>Community Outreach Specialist</td>
-              <td>Wyman-Ledner</td>
-              <td>Brazil</td>
-              <td>5/22/2020</td>
-              <td>Indigo</td>
-            </tr>
-            <tr>
-              <th>6</th>
-              <td>Irma Vasilik</td>
-              <td>Editor</td>
-              <td>Wiza, Bins and Emard</td>
-              <td>Venezuela</td>
-              <td>12/8/2020</td>
-              <td>Purple</td>
-            </tr>
-            <tr>
-              <th>7</th>
-              <td>Meghann Durtnal</td>
-              <td>Staff Accountant IV</td>
-              <td>Schuster-Schimmel</td>
-              <td>Philippines</td>
-              <td>2/17/2021</td>
-              <td>Yellow</td>
-            </tr>
-            <tr>
-              <th>8</th>
-              <td>Sammy Seston</td>
-              <td>Accountant I</td>
-              <td>O'Hara, Welch and Keebler</td>
-              <td>Indonesia</td>
-              <td>5/23/2020</td>
-              <td>Crimson</td>
-            </tr>
-            <tr>
-              <th>9</th>
-              <td>Lesya Tinham</td>
-              <td>Safety Technician IV</td>
-              <td>Turner-Kuhlman</td>
-              <td>Philippines</td>
-              <td>2/21/2021</td>
-              <td>Maroon</td>
-            </tr>
-            <tr>
-              <th>10</th>
-              <td>Zaneta Tewkesbury</td>
-              <td>VP Marketing</td>
-              <td>Sauer LLC</td>
-              <td>Chad</td>
-              <td>6/23/2020</td>
-              <td>Green</td>
-            </tr>
+            {bills
+              .sort((a, b) => {
+                //sorting bills by time
+                const dateA = new Date(a.time).valueOf();
+                const dateB = new Date(b.time).valueOf();
+                return dateB - dateA;
+              })
+              .map((bill, index) => (
+                <tr key={index}>
+                  <th>{index + 1}</th>
+                  <td>
+                    {isLoading && !bill._id ? (
+                      //if  bill is still geting added this will show generating text
+                      <span className="text-primary">Generating Id</span>
+                    ) : (
+                      bill._id
+                    )}
+                  </td>
+                  <td>{bill.name}</td>
+                  <td>{bill.email}</td>
+                  <td>{bill.phone}</td>
+                  <td>{bill.amount}</td>
+                  <td>Blue</td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        <div className="my-8 flex justify-center">
+          <div className="btn-group">
+            {[...Array(pages).keys()].map((number) => (
+              <button
+                key={number}
+                onClick={() => {
+                  setPage(number);
+                }}
+                className={page === number ? "btn btn-active" : "btn"}
+              >
+                {number + 1}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
